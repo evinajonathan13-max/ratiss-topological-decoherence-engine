@@ -38,6 +38,9 @@ Pour produire seulement une timeline depuis le terminal :
 ratiss-topo-demo --output artifacts/full_timeline.json
 ratiss-topo-demo --studio-input examples/transmon-microcell.studio.json --output artifacts/studio_timeline.json
 ratiss-topo-demo --statevector-input examples/qiskit-bell-statevector-trajectory.json --output artifacts/external_bell_timeline.json
+ratiss-topo-demo --counts-input examples/qiskit-counts-trajectory.json --output artifacts/qiskit_counts_timeline.json
+ratiss-topo-demo --photon-input examples/photonic-mode-trajectory.json --output artifacts/photonic_modes_timeline.json
+ratiss-topo-demo --bio-input examples/bio-correlation-trajectory.json --output artifacts/bio_correlation_timeline.json
 ```
 
 Sans installation de package, l’exemple peut aussi être lancé depuis une copie de travail :
@@ -107,7 +110,9 @@ Le SDK prépare trois types d’entrée, avec une frontière nette :
 |---|---|---|
 | Circuit simulé | Fonctionnel localement | Personnaliser la liste de `GateSpec` ou fournir un programme compatible |
 | Résultats mesurés / QPU | Adaptateur à construire, optionnel | Convertir les comptes Pauli ou matrices d’état vers `timeline.v1`, sans jeton dans le dépôt |
-| Bio-cohérence ou autre phénomène fourni | Contrat d’analyse à adapter | Importer une trajectoire de relations/corrélations et déclarer explicitement le modèle de mesure ; pas de diagnostic biomédical |
+| Comptages Qiskit | Association classique déclarée | Convertir une distribution de mesures vers une structure de co-occurrence, sans tomographie ni entanglement inférés |
+| Modes photoniques | Association de co-occupation déclarée | Convertir des probabilités d’occupation de modes vers une structure de relations, sans matrice densité photonique inférée |
+| Corrélations bio ou autre phénomène fourni | Matrices déclarées normalisées | Importer une trajectoire de relations/corrélations avec protocole de mesure, sans diagnostic biomédical |
 
 ## Portée et honnêteté
 

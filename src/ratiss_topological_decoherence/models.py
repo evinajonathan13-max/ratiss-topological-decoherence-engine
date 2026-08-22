@@ -68,6 +68,9 @@ def timeline_document(
     encoding: dict[str, Any],
     design_context: dict[str, Any] | None = None,
     provenance_mode: str = "local",
+    simulation_kind: str = "density_matrix",
+    cube_metric: str = "normalized_mutual_information",
+    cube_normalization: str = "min(1, I(rho_ij)/2)",
 ) -> dict[str, Any]:
     """Build the versioned interchange document consumed by the offline atlas."""
 
@@ -76,7 +79,7 @@ def timeline_document(
         "provenance": {
             "mode": provenance_mode,
             "engine": "ratiss-topological-decoherence-engine",
-            "simulation": "density_matrix",
+            "simulation": simulation_kind,
             "validated_on_hardware": False,
             "claim_boundary": (
                 "Simulation and topological post-processing only; not a hardware "
@@ -87,10 +90,10 @@ def timeline_document(
         "config": config,
         "cube": {
             "axes": ["step", "source_qubit", "target_qubit"],
-            "metric": "normalized_mutual_information",
-            "normalization": "min(1, I(rho_ij)/2)",
+            "metric": cube_metric,
+            "normalization": cube_normalization,
         },
-        "steps": [step.to_dict() for step in steps],
+        "steps": [step.to_dict() if isinstance(step, StepArtifact) else step for step in steps],
     }
     if design_context is not None:
         document["design_context"] = design_context
