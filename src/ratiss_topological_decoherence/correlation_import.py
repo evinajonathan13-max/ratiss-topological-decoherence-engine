@@ -227,6 +227,51 @@ def run_photonic_mode_file(path: str | Path) -> dict[str, Any]:
     return run_photonic_mode_trajectory(json.loads(Path(path).read_text(encoding="utf-8")))
 
 
+def run_perceval_distribution(distribution: Any, *, label: str = "perceval_distribution", source: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Convert a local Perceval ``BSDistribution`` into a RATISS mode timeline.
+
+    This function consumes only the declared output distribution. It does not
+    infer unobserved phases, a density matrix, device calibration or a hardware
+    result. It deliberately delegates the structural conversion to the same
+    photonic mode contract used for serialized external outcomes.
+    """
+
+    outcomes: list[dict[str, Any]] = []
+    n_modes: int | None = None
+    for state, probability in distribution.items():
+        width = int(state.m)
+        if n_modes is None: n_modes = width
+        if width != n_modes: raise ValueError("Perceval distribution contains inconsistent mode widths.")
+        outcomes.append({"occupation": [int(state[index]) for index in range(width)], "probability": float(probability)})
+    if n_modes is None: raise ValueError("Perceval distribution is empty.")
+    return run_photonic_mode_trajectory({
+        "source": {"framework": "Perceval", "backend": "declared_local_backend", **(source or {})},
+        "mode_labels": [f"m{index}" for index in range(n_modes)],
+        "trajectory": [{"step": 0, "label": label, "outcomes": outcomes}],
+    })
+
+
+def run_perceval_circuit(circuit: Any, input_occupation: list[int], *, label: str = "perceval_local_circuit") -> dict[str, Any]:
+    """Run a Perceval circuit locally through its Naive backend and normalize its output.
+
+    Perceval is imported lazily so that JSON-based photonic ingestion stays
+    usable even when the optional SDK is absent from a consumer environment.
+    """
+
+    try:
+        from perceval.backends import NaiveBackend
+        from perceval.utils import BasicState
+    except ImportError as error:
+        raise RuntimeError("Perceval is optional. Install `perceval-quandela` to run a Perceval circuit directly.") from error
+    backend = NaiveBackend()
+    backend.set_circuit(circuit)
+    backend.set_input_state(BasicState(input_occupation))
+    return run_perceval_distribution(
+        backend.prob_distribution(), label=label,
+        source={"backend": "Naive", "execution": "local_perceval_simulation", "hardware_claim": "none"},
+    )
+
+
 def run_bio_correlation_trajectory(payload: dict[str, Any]) -> dict[str, Any]:
     """Normalize supplied biological correlation matrices without diagnosis or causality inference."""
 

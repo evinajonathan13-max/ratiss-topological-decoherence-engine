@@ -24,3 +24,5 @@ ratiss-topo-demo --bio-input examples/bio-correlation-trajectory.json --output a
 | Corrélations bio | Fonctionnelle | Matrices normalisées déclarées → structure de relations | Pas de cohérence quantique, causalité, diagnostic ou conclusion biologique inférés |
 
 Le contrat de chaque entrée, ses champs requis et ses contraintes de validation sont dans [`INGESTION_CONTRACTS.md`](INGESTION_CONTRACTS.md). Les trois adaptateurs non-densité attribuent `density_metrics_available=false` à chaque étape. Le Studio Personnel affiche alors les routes et criticités comme des structures importées, et non comme une décohérence quantique mesurée.
+
+Lorsque `perceval-quandela` est installé, l’API Python `run_perceval_circuit(circuit, input_occupation)` exécute aussi localement un circuit Perceval via son backend `Naive`, récupère sa distribution de modes, puis applique le même contrat photonique. Cette voie reste une simulation locale ; elle n’envoie aucun calcul vers un processeur distant.
