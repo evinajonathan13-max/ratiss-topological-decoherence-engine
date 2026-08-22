@@ -7,15 +7,25 @@ import json
 from pathlib import Path
 
 from .simulation import run_local_demo
+from .studio_import import run_studio_file
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate a local RATISS topological-decoherence timeline.")
     parser.add_argument("--output", default="artifacts/full_timeline.json", help="Destination JSON path.")
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--studio-input", help="Quantum Circuit Studio v0.1 JSON document to compile and simulate internally.")
+    source.add_argument("--statevector-input", help="External Qiskit-compatible statevector trajectory JSON to import locally.")
     args = parser.parse_args()
     destination = Path(args.output)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    document = run_local_demo()
+    if args.studio_input:
+        document = run_studio_file(args.studio_input)
+    elif args.statevector_input:
+        from .external_statevector import run_qiskit_statevector_file
+        document = run_qiskit_statevector_file(args.statevector_input)
+    else:
+        document = run_local_demo()
     destination.write_text(json.dumps(document, indent=2), encoding="utf-8")
     print(f"Wrote {destination} ({len(document['steps'])} timeline steps).")
 

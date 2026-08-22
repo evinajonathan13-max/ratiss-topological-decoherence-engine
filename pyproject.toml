@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Local RATISS SDK for simulating and inspecting topological logical-state decoherence trajectories."
 requires-python = ">=3.11"
 dependencies = [
+  "flask>=3.0",
   "numpy>=1.26",
   "scipy>=1.11",
   "qiskit==2.5.2",
@@ -16,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 ratiss-topo-demo = "ratiss_topological_decoherence.cli:main"
+ratiss-studio-cloud = "ratiss_topological_decoherence.cloud_server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

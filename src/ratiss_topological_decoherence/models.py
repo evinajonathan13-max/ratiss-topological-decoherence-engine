@@ -66,13 +66,15 @@ def timeline_document(
     steps: list[StepArtifact],
     config: dict[str, Any],
     encoding: dict[str, Any],
+    design_context: dict[str, Any] | None = None,
+    provenance_mode: str = "local",
 ) -> dict[str, Any]:
     """Build the versioned interchange document consumed by the offline atlas."""
 
-    return {
+    document = {
         "schema": "ratiss.topological-decoherence.timeline.v1",
         "provenance": {
-            "mode": "local",
+            "mode": provenance_mode,
             "engine": "ratiss-topological-decoherence-engine",
             "simulation": "density_matrix",
             "validated_on_hardware": False,
@@ -90,3 +92,6 @@ def timeline_document(
         },
         "steps": [step.to_dict() for step in steps],
     }
+    if design_context is not None:
+        document["design_context"] = design_context
+    return document

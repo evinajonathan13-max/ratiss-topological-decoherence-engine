@@ -285,12 +285,33 @@ def _advance_logical_topology(qubit: TopologicalQubit, gate: GateSpec | None, co
     return {**qubit.measure_state(), "circuit_coupling": coupling}
 
 
-def run_local_demo(config: SimulationConfig | None = None) -> dict:
-    """Run the default local POC and return a complete timeline artifact."""
+def run_program(
+    gates: list[GateSpec],
+    config: SimulationConfig,
+    *,
+    positions: list[list[float]] | None = None,
+    encoding: dict[str, object] | None = None,
+    design_context: dict[str, object] | None = None,
+    provenance_mode: str = "local",
+) -> dict:
+    """Run a declared logical program and emit the common timeline contract.
 
-    config = config or SimulationConfig()
-    gates = default_program()
-    positions = deterministic_positions(config.n_qubits)
+    This shared execution path is used by the native demo and by the internal
+    Quantum Circuit Studio importer. It accepts only logical gates supported by
+    :func:`_apply_gate`; it never interprets a Studio drawing as a calibrated
+    device, pulse program or fabrication definition.
+    """
+
+    if config.n_qubits < 1:
+        raise ValueError("n_qubits must be positive")
+    positions = positions or deterministic_positions(config.n_qubits)
+    if len(positions) != config.n_qubits:
+        raise ValueError("positions must contain exactly one coordinate per qubit")
+    encoding = encoding or {
+        "profile": "h1_distributed_logical_state",
+        "description": "Declared logical circuit trajectory.",
+        "hardware_claim": "none",
+    }
     steps: list[StepArtifact] = []
     previous_edges: set[tuple[int, int]] = set()
     logical_qubit = TopologicalQubit(seed=42)
@@ -317,6 +338,19 @@ def run_local_demo(config: SimulationConfig | None = None) -> dict:
     return timeline_document(
         steps=steps,
         config=asdict(config),
+        encoding=encoding,
+        design_context=design_context,
+        provenance_mode=provenance_mode,
+    )
+
+
+def run_local_demo(config: SimulationConfig | None = None) -> dict:
+    """Run the default local POC and return a complete timeline artifact."""
+
+    config = config or SimulationConfig()
+    return run_program(
+        default_program(),
+        config,
         encoding={
             "profile": "h1_distributed_logical_state",
             "description": "Five-qubit distributed logical-state demonstration with cycle-like correlation couplings.",

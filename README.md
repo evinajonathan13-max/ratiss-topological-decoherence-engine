@@ -1,6 +1,6 @@
-# RATISS Topological Decoherence Engine
+# RATISS Quantum Topology Studio Cloud
 
-**RATISS Topological Decoherence Engine** est le moteur complet de la nouvelle famille de SDK RATISS. Il transforme une trajectoire de circuit simulé en un artefact traçable qui relie une matrice cubique de corrélations, un graphe de corrélations, une analyse topologique, une signature de qubit topologique logique simulé, des scores de criticité et une route d’inspection TSP.
+**RATISS Quantum Topology Studio Cloud** est le studio complet de la famille RATISS. Il réunit dans un seul dépôt clonable le modèle de conception Quantum Circuit Studio, la simulation locale en matrice densité, la cartographie topologique RATISS, la signature de qubit logique simulé, la criticité, les routes d’inspection et les adaptateurs de trajectoires externes.
 
 > Ce dépôt prolonge directement le simulateur de qubit topologique trouvé dans la branche RATISS Experimental IA `decoherence-map` au commit `c67d2e7`. Le code source RATISS initial n’est pas modifié. La carte de provenance est disponible dans [`docs/SOURCE_REUSE_MAP.md`](docs/SOURCE_REUSE_MAP.md).
 
@@ -17,7 +17,7 @@
 | Inspection | TSP exact Hold–Karp ou heuristique déterministe | `tsp_inspection`, explicitement séparé de `P_sig` |
 | Portabilité | Artefact JSON versionné | Chargement hors ligne dans `ratiss-decoherence-atlas` |
 
-## Démarrage local
+## Démarrage local et profil Cloud
 
 Le moteur est conçu pour une exécution CPU locale. Les dépendances nécessaires sont Qiskit, Qiskit Aer, NumPy et SciPy.
 
@@ -27,7 +27,17 @@ cd ratiss-topological-decoherence-engine
 python3 -m venv .venv
 source .venv/bin/activate              # Windows PowerShell : .\.venv\Scripts\Activate.ps1
 pip install -e .
+ratiss-studio-cloud
+```
+
+Ouvrir ensuite `http://127.0.0.1:8765`. Le Studio Cloud démarre localement par défaut ; il peut ensuite être placé sur une machine Linux plus puissante sans changer son contrat d’artefact. Il n’impose aucun fournisseur cloud au runtime.
+
+Pour produire seulement une timeline depuis le terminal :
+
+```bash
 ratiss-topo-demo --output artifacts/full_timeline.json
+ratiss-topo-demo --studio-input examples/transmon-microcell.studio.json --output artifacts/studio_timeline.json
+ratiss-topo-demo --statevector-input examples/qiskit-bell-statevector-trajectory.json --output artifacts/external_bell_timeline.json
 ```
 
 Sans installation de package, l’exemple peut aussi être lancé depuis une copie de travail :
@@ -83,6 +93,12 @@ signature = logical_qubit.h_gate().noise(0.05).measure_state()
 
 Le détail des champs et contrats se trouve dans [`docs/API_REFERENCE.md`](docs/API_REFERENCE.md). Les limites de portée, les seuils et la séparation TSP/persistance sont décrits dans [`docs/ARCHITECTURE_CONTRACT.md`](docs/ARCHITECTURE_CONTRACT.md).
 
+## Deux studios, un contrat
+
+Le Studio Cloud est autonome : sa copie traçable du modèle Quantum Circuit Studio est incluse sous `web/studio-model.mjs`, son interface réunit le schéma, les couches, fréquences, diaphonie nominale, la simulation RATISS, les métriques et le WebGL. Le Studio Personnel est un second dépôt autonome et léger qui sait concevoir localement, importer les mêmes timelines et les rejouer hors ligne.
+
+Le contrat complet est détaillé dans [`docs/TWO_STUDIOS_CONTRACT.md`](docs/TWO_STUDIOS_CONTRACT.md).
+
 ## Réutilisation et extension
 
 Le SDK prépare trois types d’entrée, avec une frontière nette :
@@ -106,3 +122,7 @@ Le dépôt ne fabrique pas de qubit matériel, ne constitue pas un modèle de fa
 | [`API_REFERENCE.md`](docs/API_REFERENCE.md) | API Python, contrat JSON et règles de compatibilité |
 | [`PROOF_OF_CONCEPT.md`](docs/PROOF_OF_CONCEPT.md) | Protocole, résultat du run, tests et interprétation |
 | [`INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md) | Intégration locale, atlas et futur adaptateur externe |
+| [`STUDIO_INTEGRATION_CONTRACT.md`](docs/STUDIO_INTEGRATION_CONTRACT.md) | Compilation du modèle Quantum Circuit Studio vers une timeline RATISS |
+| [`TWO_STUDIOS_CONTRACT.md`](docs/TWO_STUDIOS_CONTRACT.md) | Répartition Studio Cloud / Studio Personnel et compatibilité |
+| [`EXTERNAL_INGEST.md`](docs/EXTERNAL_INGEST.md) | Adaptateur Qiskit Statevector fonctionnel et frontières Perceval / bio-cohérence |
+| [`CLOUD_STUDIO_VERIFICATION.md`](docs/CLOUD_STUDIO_VERIFICATION.md) | Vérification UI du Studio Cloud unifié |
