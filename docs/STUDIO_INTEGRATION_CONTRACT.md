@@ -6,15 +6,15 @@ Le document JSON local produit par le **Quantum Circuit Studio** est la source d
 
 ```mermaid
 flowchart LR
-  S[Quantum Circuit Studio JSON\nquantum-circuit-studio/v0.1] --> I[Importeur interne RATISS]
-  I --> G[Scaffold logique\nqubits + interactions]
-  I --> D[Contexte de conception\nfréquences, couches, risques, positions]
-  G --> A[Aer local\nmatrices densité]
-  A --> C[Cube M step × i × j]
-  C --> T[Topologie + criticité + TSP]
-  D --> O[design_context dans timeline.v1]
+  S["Export Quantum Studio JSON"] --> I["Importeur interne RATISS"]
+  I --> G["Scaffold logique de qubits et interactions"]
+  I --> D["Contexte de conception"]
+  G --> A["Aer local et matrices densité"]
+  A --> C["Cube de relations par étape et paire"]
+  C --> T["Topologie, criticité et TSP"]
+  D --> O["Contexte de design dans timeline"]
   T --> O
-  O --> V[Atlas WebGL hors ligne]
+  O --> V["Atlas WebGL hors ligne"]
 ```
 
 ## Mapping contrôlé

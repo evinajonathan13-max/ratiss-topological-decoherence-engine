@@ -12,7 +12,7 @@ Il ne cherche pas à prouver que le qubit logique RATISS est un qubit topologiqu
 sequenceDiagram
   participant C as Circuit 5 qubits
   participant A as Aer local
-  participant M as Cube M[k,i,j]
+  participant M as Cube de relations
   participant T as Topologie
   participant L as Qubit logique RATISS
   participant R as Route TSP

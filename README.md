@@ -115,21 +115,21 @@ Le catalogue détaillé, les artefacts source et les vérifications se trouvent 
 
 ```mermaid
 flowchart LR
-  A[Document Quantum Circuit Studio] --> B[Importeur interne]
-  B --> C[Scaffold logique déclaré]
-  C --> D[Qiskit Aer\nréférence idéale et bruitée]
-  D --> E[Réductions rho_i / rho_ij]
-  E --> F[Cube M[k,i,j]]
-  F --> G[Graphe de relations]
-  G --> H[Rips / Betti / P_sig]
-  D --> I[Fidélité, pureté et criticité]
-  J[Noyau TopologicalQubit RATISS] --> K[Signature logique]
-  I --> L[Ensemble d’inspection]
-  L --> M[TSP séparé]
-  H --> N[Timeline versionnée]
+  A["Document Quantum Studio"] --> B["Importeur interne"]
+  B --> C["Scaffold logique déclaré"]
+  C --> D["Qiskit Aer idéal et bruité"]
+  D --> E["Réductions de densité"]
+  E --> F["Cube de relations par étape et paire"]
+  F --> G["Graphe de relations"]
+  G --> H["Rips, Betti et P sig"]
+  D --> I["Fidélité, pureté et criticité"]
+  J["Noyau topologique RATISS"] --> K["Signature logique"]
+  I --> L["Ensemble d’inspection"]
+  L --> M["TSP séparé"]
+  H --> N["Timeline versionnée"]
   K --> N
   M --> N
-  N --> O[Studio Personnel / WebGL]
+  N --> O["Studio Personnel et WebGL"]
 ```
 
 La matrice principale est une série cubique de relations :
