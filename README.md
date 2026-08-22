@@ -6,7 +6,9 @@ Le **RATISS Quantum Topology Studio Cloud** rassemble dans un dépôt clonable l
 
 > Le projet est un environnement de **simulation et d’inspection logicielle**. Il ne fabrique pas de puce, ne calibre pas de dispositif, ne corrige pas un qubit physique et ne remplace pas une expérience matérielle.
 
-![Démonstration WebGL de la trajectoire interne Quantum Studio](docs/assets/cloud-trajectory-webgl.webp)
+![Espace de travail complet RATISS Quantum Topology Studio Cloud après une simulation interne](docs/media/cloud-studio-workspace.webp)
+
+> **Preuve visuelle de l’interface complète.** Cette capture réelle montre, dans le même espace de travail, le document `transmon-microcell`, le schéma Quantum Studio, la scène topologique WebGL, la timeline RATISS, les métriques, l’overlay de diaphonie nominale et la console de provenance après une simulation interne. Les champs affichés conservent leurs limites : simulation à matrice densité et post-traitement topologique, sans certification matérielle.
 
 ## Pourquoi un studio unifié ?
 
@@ -19,6 +21,18 @@ Les chercheurs et développeurs ont besoin d’un chemin court entre une hypoth�
 | Cartographie | Cube temporel, graphe de relations, Betti, `P_sig`, criticité et TSP | Observable matérielle directe ou métrique universelle de performance |
 | Noyau logique | Qubit topologique RATISS simulé, anneau/torsion/bruit logiciel et signature logique | Qubit topologique matériel démontré |
 | Ingestion | Statevectors, comptages, distributions photoniques, matrices de corrélation déclarées | Tomographie, entanglement ou diagnostic inféré lorsqu’ils ne sont pas fournis |
+
+## Interface Studio complète : conception et cartographie dans le même flux
+
+Le Studio ne remplace pas le concepteur de circuit par une vue décorative. La colonne de conception garde le schéma, les composants, les couches conceptuelles, les fréquences nominales, la détection de collision et l’overlay de diaphonie. Le panneau de travail expose simultanément le schéma et la topologie produite par une simulation ; la ligne de temps conserve enfin les métriques de graphe, la signature logique, les nœuds critiques et la route TSP d’inspection.
+
+| Zone visible dans l’interface | Fonction réelle | Frontière scientifique affichée |
+|---|---|---|
+| Conception Quantum Studio | Démo, ajout de transmon, optimisation heuristique et export JSON | Ni layout de fonderie, ni solveur EM, ni recette de fabrication |
+| Schéma et couches | Composants, couplers, résonateurs, feedlines et proxies de couches | Représentation de conception, pas géométrie certifiée de puce |
+| Risques fréquentiels et diaphonie | Séparation nominale et score d’overlay explicite | Ni mesure, ni calibration électromagnétique |
+| Simulation et scène WebGL | Timeline versionnée, graphe, criticité, `P_sig` et signature logique | Résultats de simulation / post-traitement, pas QPU |
+| Console de compilation | Scaffold logique, provenance et carte Studio → RATISS | N’interprète pas un scaffold comme une séquence de pulses |
 
 ## Démarrage en moins de cinq minutes
 
@@ -49,18 +63,28 @@ pip install -e '.[photonic]'
 | `ratiss-topo-demo --bio-input examples/bio-correlation-trajectory.json --output artifacts/correlation.json` | Matrices de corrélation déclarées |
 | `ratiss-topo-demo --ttf-smooth-ablation artifacts/full_timeline.json --output-dir artifacts/ttf_smooth_ablation` | Référence et régularisation TTF séparées |
 
-## Démonstrations WebGL directes
+## Démonstrations WebGL visibles directement dans ce README
 
-Deux démonstrations sont distribuées avec le Studio Cloud. Lancez le serveur puis ouvrez les liens ; elles chargent uniquement les artefacts versionnés de ce dépôt.
+GitHub Markdown ne peut pas exécuter une page HTML/WebGL interactive dans un README. Pour rendre le fonctionnement visible immédiatement, les deux expériences ci-dessous sont de **vrais aperçus animés** assemblés depuis les captures de leurs rendus WebGL et leurs contrôles réels. Un clic ouvre la vidéo WebM correspondante ; l’expérience interactive complète reste disponible localement après le démarrage du Studio.
 
-| Démonstration | Lien local | Données visualisées | Interaction |
+### Démonstration 01 — document Quantum Studio → timeline topologique
+
+[![Aperçu animé réel de la trajectoire Cloud : design, scènes WebGL et métriques](docs/media/cloud-trajectory-webgl-preview.gif)](docs/media/cloud-trajectory-webgl.webm)
+
+Cette animation rejoue trois états affichés par la démo Cloud, de l’initialisation à `cz(0,1)`. Elle montre le design `transmon-microcell`, ses couches et hypothèses nominales à gauche, puis la scène de relations et les métriques de timeline. Ouvrez l’expérience interactive après `ratiss-studio-cloud` : [`http://127.0.0.1:8765/demos/decoherence-trajectory.html`](http://127.0.0.1:8765/demos/decoherence-trajectory.html).
+
+### Démonstration 02 — référence TTF et régularisation de graphe
+
+[![Aperçu animé réel de l’ablation TTF Cloud : référence puis régularisation](docs/media/cloud-ttf-webgl-preview.gif)](docs/media/cloud-ttf-webgl.webm)
+
+L’aperçu alterne les deux scénarios versionnés : `ttf_smooth_baseline` puis `ttf_smooth_regularized`. Le design reste affiché pendant la comparaison afin de ne pas confondre une ablation de graphe avec une modification physique d’un circuit. L’expérience interactive se lance localement à [`http://127.0.0.1:8765/demos/ttf-comparison.html`](http://127.0.0.1:8765/demos/ttf-comparison.html).
+
+| Démonstration | Média intégré | Vidéo | Interaction locale |
 |---|---|---|---|
-| Trajectoire de conception → topologie | [`/demos/decoherence-trajectory.html`](http://127.0.0.1:8765/demos/decoherence-trajectory.html) | Import Quantum Studio, portes, nœuds, arêtes et route TSP | Timeline, rotation, zoom et reset caméra |
-| Ablation TTF | [`/demos/ttf-comparison.html`](http://127.0.0.1:8765/demos/ttf-comparison.html) | Référence et régularisation de graphe, frontière et support | Bascule de scénario, timeline, rotation et zoom |
+| Trajectoire de conception → topologie | [`GIF animé`](docs/media/cloud-trajectory-webgl-preview.gif) | [`WebM`](docs/media/cloud-trajectory-webgl.webm) | Timeline, rotation, zoom et reset caméra |
+| Ablation TTF | [`GIF animé`](docs/media/cloud-ttf-webgl-preview.gif) | [`WebM`](docs/media/cloud-ttf-webgl.webm) | Référence/régularisation, timeline, rotation et zoom |
 
-![Démonstration WebGL de comparaison TTF](docs/assets/cloud-ttf-comparison-webgl.webp)
-
-Le catalogue détaillé, les artefacts source et les vérifications se trouvent dans [`docs/DEMO_CATALOG.md`](docs/DEMO_CATALOG.md).
+Le catalogue détaillé, les artefacts source et les vérifications se trouvent dans [`docs/DEMO_CATALOG.md`](docs/DEMO_CATALOG.md) et dans la [vérification visuelle versionnée](docs/DEMO_VISUAL_AUDIT.md).
 
 ## Le pipeline de données
 

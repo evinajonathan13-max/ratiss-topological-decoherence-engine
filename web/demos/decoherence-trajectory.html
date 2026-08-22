@@ -1,1 +1,36 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RATISS Cloud Demo — Trajectoire</title><link rel="stylesheet" href="demo.css"></head><body data-artifact="/artifacts/studio_transmon_microcell_timeline.json"><header class="top"><div><p class="eyebrow">WEBGL DEMO 01 · STUDIO CLOUD</p><h1>Trajectoire de conception → topologie</h1></div><div class="tag">Artefact : internal_studio_import</div></header><main class="shell"><section class="stage"><div id="scene"></div><div class="overlay"><span id="step-label">Chargement…</span><span>Glisser : orbite · molette : zoom</span></div></section><aside class="panel"><p class="eyebrow">REPLAY CALCULÉ</p><h2>Timeline interne Quantum Studio</h2><p>Cette scène lit une timeline générée par le chemin de conception interne : modèle Studio, compilation logique, simulation, cube et graphe. Aucun élément graphique ne vient d’une donnée décorative.</p><div class="metric"><span>Étape</span><strong id="gate">—</strong></div><div class="metric"><span>P<sub>sig</sub> graphe</span><strong id="psig">—</strong></div><div class="metric"><span>Signature logique</span><strong id="logical">—</strong></div><div class="metric"><span>Route TSP</span><strong id="route">—</strong></div><input id="step" class="progress" type="range" min="0" max="0" value="0"><div class="controls"><button id="play">Pause</button><button id="reset">Caméra</button></div><div class="legend"><div><i class="dot teal"></i>Support de graphe exporté</div><div><i class="dot red"></i>Criticité exportée</div><div><i class="line"></i>Arête de corrélation</div><div><i class="line violet"></i>Route TSP d’inspection</div></div><p class="notice">Démonstration de simulation et de visualisation. Elle ne constitue ni une exécution QPU, ni une calibration, ni une validation de fabrication.</p></aside></main><script src="../vendor/three.min.js"></script><script src="trajectory-demo.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>RATISS Cloud Demo — Trajectoire</title>
+    <link rel="stylesheet" href="demo.css" />
+  </head>
+  <body data-artifact="/artifacts/studio_transmon_microcell_timeline.json">
+    <header class="top">
+      <div><p class="eyebrow">WEBGL DEMO 01 · STUDIO CLOUD</p><h1>Quantum Studio → trajectoire topologique</h1></div>
+      <div class="tag">design interne · simulation · atlas · aucune validation matérielle déclarée</div>
+    </header>
+    <main class="shell">
+      <aside class="design-panel">
+        <p class="eyebrow">CONCEPTION QUANTUM STUDIO</p><h2 id="design-name">Chargement du design…</h2>
+        <p>Le design reste visible du schéma jusqu’à l’artefact : composants, couches, fréquences et couplage ne disparaissent pas lorsque la cartographie RATISS commence.</p>
+        <svg id="design-schematic" class="design-schematic" viewBox="0 0 100 100" role="img" aria-label="Schéma complet Quantum Circuit Studio"></svg>
+        <div class="design-grid"><div class="design-card"><strong id="component-count">—</strong><span>composants / liens</span></div><div class="design-card"><strong id="design-status">—</strong><span>validation locale</span></div></div>
+        <div id="design-layers" class="mini-list"></div><div id="design-frequency" class="mini-list"></div><div id="design-crosstalk" class="mini-list"></div>
+        <pre id="design-console" class="mini-console">Compilation Studio → RATISS : en attente</pre>
+      </aside>
+      <section class="stage"><div id="scene"></div><div class="overlay"><span id="step-label">Chargement…</span><span>Glisser : orbite · molette : zoom</span></div></section>
+      <aside class="panel">
+        <p class="eyebrow">CARTOGRAPHIE RATISS</p><h2>Timeline interne Quantum Studio</h2>
+        <p>Le document de gauche est compilé dans un scaffold logique déclaré, simulé puis exporté sous forme de cube, graphe et timeline rejouable.</p>
+        <div class="metric"><span>Étape</span><strong id="gate">—</strong></div><div class="metric"><span>P<sub>sig</sub> graphe</span><strong id="psig">—</strong></div><div class="metric"><span>Signature logique</span><strong id="logical">—</strong></div><div class="metric"><span>Route TSP</span><strong id="route">—</strong></div>
+        <input id="step" class="progress" type="range" min="0" max="0" value="0" />
+        <div class="controls"><button id="play">Pause</button><button id="reset">Caméra</button></div>
+        <div class="legend"><div><i class="dot teal"></i>Support de graphe exporté</div><div><i class="dot red"></i>Criticité exportée</div><div><i class="line"></i>Arête de corrélation</div><div><i class="line violet"></i>Route TSP d’inspection</div></div>
+        <p class="notice">Démonstration de simulation et de visualisation. Elle ne constitue ni une exécution QPU, ni une calibration, ni une validation de fabrication.</p>
+      </aside>
+    </main>
+    <script src="../vendor/three.min.js"></script><script src="trajectory-demo.js"></script>
+  </body>
+</html>
