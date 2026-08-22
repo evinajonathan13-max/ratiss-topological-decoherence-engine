@@ -1,25 +1,28 @@
 # RATISS Quantum Topology Studio Cloud
 
-**RATISS Quantum Topology Studio Cloud** est le studio complet de la famille RATISS. Il réunit dans un seul dépôt clonable le modèle de conception Quantum Circuit Studio, la simulation locale en matrice densité, la cartographie topologique RATISS, la signature de qubit logique simulé, la criticité, les routes d’inspection et les adaptateurs de trajectoires externes.
+> **Un studio unique pour concevoir un circuit, rejouer une trajectoire de simulation, cartographier ses relations topologiques et produire un artefact explicable.**
 
-> Ce dépôt prolonge directement le simulateur de qubit topologique trouvé dans la branche RATISS Experimental IA `decoherence-map` au commit `c67d2e7`. Le code source RATISS initial n’est pas modifié. La carte de provenance est disponible dans [`docs/SOURCE_REUSE_MAP.md`](docs/SOURCE_REUSE_MAP.md).
+Le **RATISS Quantum Topology Studio Cloud** rassemble dans un dépôt clonable le modèle de conception de Quantum Circuit Studio, un moteur local à matrice densité, le noyau de qubit topologique logique RATISS, l’analyse de graphe, l’inspection TSP et quatre chemins d’ingestion externe. Il est nommé *Cloud* parce qu’il peut être déployé sur une machine plus puissante ; son démarrage par défaut reste **local-first**, sans fournisseur cloud obligatoire.
 
-## Ce que le SDK fait aujourd’hui
+> Le projet est un environnement de **simulation et d’inspection logicielle**. Il ne fabrique pas de puce, ne calibre pas de dispositif, ne corrige pas un qubit physique et ne remplace pas une expérience matérielle.
 
-| Capacité | Implémentation actuelle | Sortie |
+![Démonstration WebGL de la trajectoire interne Quantum Studio](docs/assets/cloud-trajectory-webgl.webp)
+
+## Pourquoi un studio unifié ?
+
+Les chercheurs et développeurs ont besoin d’un chemin court entre une hypothèse de conception et une visualisation inspectable. Ici, un même document de circuit sert de source de conception, est compilé dans un scaffold logique déclaré, puis donne une timeline versionnée relue par l’interface WebGL. La séparation entre les couches reste explicite : **le Studio décrit un design**, le **moteur simule un modèle**, puis l’**Atlas rejoue les sorties calculées**.
+
+| Couche | Ce que le dépôt fait | Ce qu’il ne prétend pas faire |
 |---|---|---|
-| Circuit local | Qiskit Aer en mode matrice densité, avec référence idéale et trajectoire bruitée | Une observation par étape de porte |
-| Cube | `M[k,i,j] = min(1, I(ρij)/2)` | Tranches `cube_slice` par pas temporel |
-| Graphe | Liens issus d’information mutuelle, corrélations de Pauli et concurrence | Nœuds, tubes, degrés et stabilité |
-| Topologie du graphe | Rips transparent, Betti et persistance H1 finie | `topology.psig`, diagrammes et Betti |
-| Noyau RATISS | Qubit topologique logique simulé en anneau tordu, portes analogues et bruit logiciel | `logical_topology.P_sig`, protection, bit logique |
-| Criticité | Composition transparente fidélité / force de graphe / rupture de liens | Nœuds critiques documentés |
-| Inspection | TSP exact Hold–Karp ou heuristique déterministe | `tsp_inspection`, explicitement séparé de `P_sig` |
-| Portabilité | Artefact JSON versionné | Chargement hors ligne dans `ratiss-decoherence-atlas` |
+| Conception | Schéma, couches conceptuelles, fréquences nominales, risque de diaphonie et export JSON | Solveur électromagnétique, layout de fonderie ou calibration |
+| Simulation | Évolution locale à matrice densité, état idéal/bruité et réductions de sous-systèmes | Exécution équivalente à un QPU réel |
+| Cartographie | Cube temporel, graphe de relations, Betti, `P_sig`, criticité et TSP | Observable matérielle directe ou métrique universelle de performance |
+| Noyau logique | Qubit topologique RATISS simulé, anneau/torsion/bruit logiciel et signature logique | Qubit topologique matériel démontré |
+| Ingestion | Statevectors, comptages, distributions photoniques, matrices de corrélation déclarées | Tomographie, entanglement ou diagnostic inféré lorsqu’ils ne sont pas fournis |
 
-## Démarrage local et profil Cloud
+## Démarrage en moins de cinq minutes
 
-Le moteur est conçu pour une exécution CPU locale. Les dépendances nécessaires sont Qiskit, Qiskit Aer, NumPy et SciPy.
+Le Studio Cloud fonctionne sur Python 3.11+ avec Qiskit Aer, NumPy et SciPy. Créez un environnement isolé, installez le paquet, puis lancez l’interface :
 
 ```bash
 git clone https://github.com/evinajonathan13-max/ratiss-topological-decoherence-engine
@@ -30,104 +33,129 @@ pip install -e .
 ratiss-studio-cloud
 ```
 
-Ouvrir ensuite `http://127.0.0.1:8765`. Le Studio Cloud démarre localement par défaut ; il peut ensuite être placé sur une machine Linux plus puissante sans changer son contrat d’artefact. Il n’impose aucun fournisseur cloud au runtime.
-
-Pour produire seulement une timeline depuis le terminal :
+Ouvrez ensuite `http://127.0.0.1:8765`. Pour tester le profil photonique direct local, installez l’extra optionnel :
 
 ```bash
-ratiss-topo-demo --output artifacts/full_timeline.json
-ratiss-topo-demo --studio-input examples/transmon-microcell.studio.json --output artifacts/studio_timeline.json
-ratiss-topo-demo --statevector-input examples/qiskit-bell-statevector-trajectory.json --output artifacts/external_bell_timeline.json
-ratiss-topo-demo --counts-input examples/qiskit-counts-trajectory.json --output artifacts/qiskit_counts_timeline.json
-ratiss-topo-demo --photon-input examples/photonic-mode-trajectory.json --output artifacts/photonic_modes_timeline.json
-ratiss-topo-demo --bio-input examples/bio-correlation-trajectory.json --output artifacts/bio_correlation_timeline.json
+pip install -e '.[photonic]'
 ```
 
-Sans installation de package, l’exemple peut aussi être lancé depuis une copie de travail :
+| Commande | Produit |
+|---|---|
+| `ratiss-topo-demo --output artifacts/full_timeline.json` | POC local à matrice densité |
+| `ratiss-topo-demo --studio-input examples/transmon-microcell.studio.json --output artifacts/studio_timeline.json` | Chemin interne Quantum Circuit Studio → timeline |
+| `ratiss-topo-demo --statevector-input examples/qiskit-bell-statevector-trajectory.json --output artifacts/bell.json` | Import Statevector Qiskit |
+| `ratiss-topo-demo --counts-input examples/qiskit-counts-trajectory.json --output artifacts/counts.json` | Comptages, associations classiques seulement |
+| `ratiss-topo-demo --photon-input examples/photonic-mode-trajectory.json --output artifacts/photon.json` | Co-occupations de modes déclarées |
+| `ratiss-topo-demo --bio-input examples/bio-correlation-trajectory.json --output artifacts/correlation.json` | Matrices de corrélation déclarées |
+| `ratiss-topo-demo --ttf-smooth-ablation artifacts/full_timeline.json --output-dir artifacts/ttf_smooth_ablation` | Référence et régularisation TTF séparées |
 
-```bash
-PYTHONPATH=src python3 -m ratiss_topological_decoherence.cli --output artifacts/full_timeline.json
-PYTHONPATH=src pytest
-```
+## Démonstrations WebGL directes
 
-## Architecture
+Deux démonstrations sont distribuées avec le Studio Cloud. Lancez le serveur puis ouvrez les liens ; elles chargent uniquement les artefacts versionnés de ce dépôt.
+
+| Démonstration | Lien local | Données visualisées | Interaction |
+|---|---|---|---|
+| Trajectoire de conception → topologie | [`/demos/decoherence-trajectory.html`](http://127.0.0.1:8765/demos/decoherence-trajectory.html) | Import Quantum Studio, portes, nœuds, arêtes et route TSP | Timeline, rotation, zoom et reset caméra |
+| Ablation TTF | [`/demos/ttf-comparison.html`](http://127.0.0.1:8765/demos/ttf-comparison.html) | Référence et régularisation de graphe, frontière et support | Bascule de scénario, timeline, rotation et zoom |
+
+![Démonstration WebGL de comparaison TTF](docs/assets/cloud-ttf-comparison-webgl.webp)
+
+Le catalogue détaillé, les artefacts source et les vérifications se trouvent dans [`docs/DEMO_CATALOG.md`](docs/DEMO_CATALOG.md).
+
+## Le pipeline de données
 
 ```mermaid
 flowchart LR
-  A[Programme de portes] --> B[Qiskit Aer\nmatrice densité idéale + bruitée]
-  B --> C[Réductions rho_i et rho_ij]
-  C --> D[Cube M step × qubit × qubit\ninformation mutuelle normalisée]
-  D --> E[Graphe de corrélations]
-  E --> F[Rips / Betti / P_sig de graphe]
-  B --> G[Scores locaux\nfidélité, pureté, criticité]
-  H[TopologicalQubit RATISS\nanneau, torsion, bruit] --> I[Signature logique P_sig]
-  G --> J[Nœuds critiques]
-  J --> K[Route TSP d’inspection]
-  F --> L[Artefact timeline.v1]
-  I --> L
-  K --> L
-  L --> M[Atlas WebGL hors ligne]
+  A[Document Quantum Circuit Studio] --> B[Importeur interne]
+  B --> C[Scaffold logique déclaré]
+  C --> D[Qiskit Aer\nréférence idéale et bruitée]
+  D --> E[Réductions rho_i / rho_ij]
+  E --> F[Cube M[k,i,j]]
+  F --> G[Graphe de relations]
+  G --> H[Rips / Betti / P_sig]
+  D --> I[Fidélité, pureté et criticité]
+  J[Noyau TopologicalQubit RATISS] --> K[Signature logique]
+  I --> L[Ensemble d’inspection]
+  L --> M[TSP séparé]
+  H --> N[Timeline versionnée]
+  K --> N
+  M --> N
+  N --> O[Studio Personnel / WebGL]
 ```
 
-Le `P_sig` de graphe et le `P_sig` du noyau logique sont toujours exportés comme deux valeurs distinctes. Cette distinction évite de présenter un changement dans une couche comme une mesure de l’autre.
+La matrice principale est une série cubique de relations :
 
-## Exemple de résultat du POC fourni
+\[
+M[k,i,j] = \min\left(1, \frac{I(\rho_{ij})}{2}\right)
+\]
 
-Le scénario livré par défaut est `accelerated_decoherence_stress_demo`. Il est volontairement accéléré pour rendre les ruptures visibles sur onze étapes et donc tester le lecteur d’artefacts ; il ne reproduit pas la durée de porte d’un QPU spécifique.
+où `k` est l’étape de la trajectoire, `i` et `j` deux qubits, et `I(ρij)` l’information mutuelle dérivée des réductions de densité. Cette formule est employée par le chemin de simulation densité ; les imports non-densité portent un type de relation différent et ne reçoivent jamais par défaut des métriques de fidélité ou d’entanglement.
 
-| Observation du run de référence local | Valeur exportée | Interprétation exacte |
+## Preuves calculées livrées avec le dépôt
+
+Le scénario par défaut `accelerated_decoherence_stress_demo` rend les ruptures assez visibles pour tester l’interface ; ses durées ne reproduisent pas un QPU précis. Les valeurs ci-dessous proviennent des artefacts versionnés, pas d’une décoration de documentation.
+
+| Observation locale | Valeur exportée | Portée exacte |
 |---|---:|---|
-| Étapes | 11 | Initialisation plus dix portes du circuit de démonstration |
-| Signature logique initiale | `1.214` | `P_sig` du qubit topologique logique simulé RATISS |
-| Signature logique finale | `0.766` | Dégradation dans le modèle de bruit logiciel du noyau logique |
-| Topologie de graphe finale | Betti `[1,0,0]`, `P_sig=0.000` | Le graphe issu de cette trajectoire ne contient pas de cycle H1 fini persistant à cette étape |
-| Route d’inspection finale | `3 → 4 → 3` | TSP exact sur deux nœuds qui dépassent le seuil de criticité du scénario ; **ce n’est pas `P_sig`** |
+| Nombre d’étapes du POC | `11` | Initialisation et dix portes du circuit de démonstration |
+| Signature logique initiale | `1.214` | `P_sig` du noyau topologique logique simulé RATISS |
+| Signature logique finale | `0.766` | Sortie du modèle de bruit logiciel du noyau logique |
+| Graphe final | Betti `[1, 0, 0]`, `P_sig = 0.000` | Aucun cycle H1 fini persistant détecté dans ce graphe, à ce seuil et cette étape |
+| Route terminale | `3 → 4 → 3` | Inspection exacte Hold–Karp de nœuds critiques ; ce n’est pas `P_sig` |
+| Ablation TTF, support terminal | `0.118 → 1.006` | Comparaison de deux graphes logiciels ; pas une correction d’erreur quantique |
 
-## Interfaces principales
+Le `P_sig` du graphe et la signature du qubit logique sont deux champs distincts. Une variation dans l’un ne justifie jamais une conclusion automatique sur l’autre. Les détails de protocole sont consignés dans [`docs/PROOF_OF_CONCEPT.md`](docs/PROOF_OF_CONCEPT.md) et [`docs/TTF_SMOOTH_STABILIZATION.md`](docs/TTF_SMOOTH_STABILIZATION.md).
+
+## API, formats et adaptations
 
 ```python
 from ratiss_topological_decoherence import SimulationConfig, run_local_demo
 from ratiss_topological_decoherence.logical_qubit import TopologicalQubit
 
-artifact = run_local_demo(SimulationConfig())
-logical_qubit = TopologicalQubit(protection=0.15, seed=42)
-signature = logical_qubit.h_gate().noise(0.05).measure_state()
+timeline = run_local_demo(SimulationConfig())
+logical = TopologicalQubit(protection=0.15, seed=42)
+signature = logical.h_gate().noise(0.05).measure_state()
 ```
 
-Le détail des champs et contrats se trouve dans [`docs/API_REFERENCE.md`](docs/API_REFERENCE.md). Les limites de portée, les seuils et la séparation TSP/persistance sont décrits dans [`docs/ARCHITECTURE_CONTRACT.md`](docs/ARCHITECTURE_CONTRACT.md).
+Les adaptateurs traduisent un format d’entrée déclaré vers le contrat `ratiss.topological-decoherence.timeline.v1` :
 
-## Deux studios, un contrat
-
-Le Studio Cloud est autonome : sa copie traçable du modèle Quantum Circuit Studio est incluse sous `web/studio-model.mjs`, son interface réunit le schéma, les couches, fréquences, diaphonie nominale, la simulation RATISS, les métriques et le WebGL. Le Studio Personnel est un second dépôt autonome et léger qui sait concevoir localement, importer les mêmes timelines et les rejouer hors ligne.
-
-Le contrat complet est détaillé dans [`docs/TWO_STUDIOS_CONTRACT.md`](docs/TWO_STUDIOS_CONTRACT.md).
-
-## Réutilisation et extension
-
-Le SDK prépare trois types d’entrée, avec une frontière nette :
-
-| Entrée | Statut | Chemin d’extension |
+| Entrée | Calculé par l’adaptateur | Limite encodée |
 |---|---|---|
-| Circuit simulé | Fonctionnel localement | Personnaliser la liste de `GateSpec` ou fournir un programme compatible |
-| Résultats mesurés / QPU | Adaptateur à construire, optionnel | Convertir les comptes Pauli ou matrices d’état vers `timeline.v1`, sans jeton dans le dépôt |
-| Comptages Qiskit | Association classique déclarée | Convertir une distribution de mesures vers une structure de co-occurrence, sans tomographie ni entanglement inférés |
-| Modes photoniques | Association de co-occupation déclarée | Convertir des probabilités d’occupation de modes vers une structure de relations, sans matrice densité photonique inférée |
-| Corrélations bio ou autre phénomène fourni | Matrices déclarées normalisées | Importer une trajectoire de relations/corrélations avec protocole de mesure, sans diagnostic biomédical |
+| Statevector Qiskit | Matrices densité et relations dérivées | Un statevector de simulation n’est pas une validation de matériel |
+| Comptages Qiskit | Association classique diagonale et covariance de bits | Pas de cohérence hors diagonale, tomographie ni entanglement déduits |
+| Perceval / modes photoniques | Co-occupations de modes déclarées ou distribution locale | Pas de matrice densité photonique inventée |
+| Corrélations bio | Matrices normalisées fournies par l’appelant | Pas de diagnostic, de causalité ou d’interprétation biomédicale |
 
-## Portée et honnêteté
+Consultez [`docs/API_REFERENCE.md`](docs/API_REFERENCE.md), [`docs/INGESTION_CONTRACTS.md`](docs/INGESTION_CONTRACTS.md) et [`docs/EXTERNAL_INGEST.md`](docs/EXTERNAL_INGEST.md) avant d’intégrer une source externe.
 
-Le dépôt ne fabrique pas de qubit matériel, ne constitue pas un modèle de fabrication, ne déclenche aucune correction matérielle et ne remplace pas une expérience QPU. Son apport actuel est un **SDK local d’analyse topologique et de visualisation** fondé sur un simulateur logique RATISS existant, enrichi d’une matrice densité, d’artefacts versionnés et d’un atlas WebGL indépendant.
-
-## Documents
+## Architecture documentaire
 
 | Document | Contenu |
 |---|---|
-| [`ARCHITECTURE_CONTRACT.md`](docs/ARCHITECTURE_CONTRACT.md) | Maths, matrice cubique, topologie, criticité, TSP et profils local/connectable |
-| [`SOURCE_REUSE_MAP.md`](docs/SOURCE_REUSE_MAP.md) | Provenance RATISS de chaque brique réutilisée |
-| [`API_REFERENCE.md`](docs/API_REFERENCE.md) | API Python, contrat JSON et règles de compatibilité |
-| [`PROOF_OF_CONCEPT.md`](docs/PROOF_OF_CONCEPT.md) | Protocole, résultat du run, tests et interprétation |
-| [`INTEGRATION_GUIDE.md`](docs/INTEGRATION_GUIDE.md) | Intégration locale, atlas et futur adaptateur externe |
-| [`STUDIO_INTEGRATION_CONTRACT.md`](docs/STUDIO_INTEGRATION_CONTRACT.md) | Compilation du modèle Quantum Circuit Studio vers une timeline RATISS |
-| [`TWO_STUDIOS_CONTRACT.md`](docs/TWO_STUDIOS_CONTRACT.md) | Répartition Studio Cloud / Studio Personnel et compatibilité |
-| [`EXTERNAL_INGEST.md`](docs/EXTERNAL_INGEST.md) | Adaptateur Qiskit Statevector fonctionnel et frontières Perceval / bio-cohérence |
-| [`CLOUD_STUDIO_VERIFICATION.md`](docs/CLOUD_STUDIO_VERIFICATION.md) | Vérification UI du Studio Cloud unifié |
+| [`docs/ALGORITHM_GUIDE.md`](docs/ALGORITHM_GUIDE.md) | Algorithmes, frontières de métriques, cube, graphe, TSP et noyau logique |
+| [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) | Recettes de reproduction, tests, artefacts et résultats attendus |
+| [`docs/ARCHITECTURE_CONTRACT.md`](docs/ARCHITECTURE_CONTRACT.md) | Contrat de données et modèles d’exécution |
+| [`docs/STUDIO_INTEGRATION_CONTRACT.md`](docs/STUDIO_INTEGRATION_CONTRACT.md) | Chemin Quantum Circuit Studio interne |
+| [`docs/SOURCE_REUSE_MAP.md`](docs/SOURCE_REUSE_MAP.md) | Provenance de chaque composant RATISS réutilisé |
+| [`docs/TWO_STUDIOS_CONTRACT.md`](docs/TWO_STUDIOS_CONTRACT.md) | Compatibilité Studio Cloud / Studio Personnel |
+| [`docs/DEMO_CATALOG.md`](docs/DEMO_CATALOG.md) | Démonstrations, captures et artefacts WebGL |
+| [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md) | Lien entre capacités, fichiers, tests et frontières de validation |
+
+## Tests et reproduction
+
+```bash
+PYTHONPATH=src pytest
+node --check web/demos/trajectory-demo.js
+```
+
+Les tests couvrent le pipeline de simulation, la persistance, le TSP, le noyau logique, l’import Studio, les statevectors, les comptages, les distributions photoniques, les corrélations déclarées et l’ablation TTF. Les scripts et résultats attendus sont détaillés dans [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
+
+## Licence et attribution
+
+Ce dépôt est publié sous [licence MIT](LICENSE). La provenance des composants RATISS et du modèle Quantum Circuit Studio est documentée dans les cartes de réutilisation locales. Les métadonnées de citation sont dans [`CITATION.cff`](CITATION.cff). L’utilisation du code ne transforme pas les limites de simulation décrites ci-dessus en validation de matériel.
+
+## Références
+
+[1] [Qiskit Aer — documentation de l’AerSimulator](https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.AerSimulator.html).
+
+[2] [Perceval — documentation de la plateforme photonique](https://perceval.quandela.net/).

@@ -18,6 +18,7 @@ from .studio_import import run_studio_document
 
 WEB_ROOT = Path(__file__).resolve().parents[2] / "web"
 EXAMPLE_PATH = Path(__file__).resolve().parents[2] / "examples" / "transmon-microcell.studio.json"
+ARTIFACT_ROOT = Path(__file__).resolve().parents[2] / "artifacts"
 
 
 def create_app() -> Flask:
@@ -34,6 +35,11 @@ def create_app() -> Flask:
     @app.get("/api/studio/example")
     def example() -> Any:
         return jsonify(json.loads(EXAMPLE_PATH.read_text(encoding="utf-8")))
+
+    @app.get("/artifacts/<path:artifact_path>")
+    def artifact(artifact_path: str) -> Any:
+        """Serve only versioned local artifacts for the interactive documentation demos."""
+        return send_from_directory(ARTIFACT_ROOT, artifact_path)
 
     @app.post("/api/simulate/studio")
     def simulate_studio() -> Any:

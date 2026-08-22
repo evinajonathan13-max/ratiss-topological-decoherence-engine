@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use RATISS Quantum Topology Studio Cloud, please cite this software."
+title: "RATISS Quantum Topology Studio Cloud"
+version: "0.1.0"
+date-released: "2026-08-22"
+license: "MIT"
+authors:
+  - family-names: "Evina"
+    given-names: "Jonathan"
+    orcid: "https://orcid.org/0009-0000-4092-5313"
+repository-code: "https://github.com/evinajonathan13-max/ratiss-topological-decoherence-engine"
+abstract: "Local-first software for circuit-design ingestion, density-matrix simulation, topological relation mapping, explainable inspection, and replayable WebGL artifacts."
