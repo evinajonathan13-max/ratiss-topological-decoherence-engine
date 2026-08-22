@@ -10,6 +10,31 @@ Le **RATISS Quantum Topology Studio Cloud** rassemble dans un dépôt clonable l
 
 > **Preuve visuelle de l’interface complète.** Cette capture réelle montre, dans le même espace de travail, le document `transmon-microcell`, le schéma Quantum Studio, la scène topologique WebGL, la timeline RATISS, les métriques, l’overlay de diaphonie nominale et la console de provenance après une simulation interne. Les champs affichés conservent leurs limites : simulation à matrice densité et post-traitement topologique, sans certification matérielle.
 
+## Le cœur du Studio : un qubit topologique RATISS simulé et inspectable
+
+Le Studio ne place pas la topologie à la fin d’un pipeline comme une décoration. Son noyau logique représente une information **distribuée sur un réseau H1-capable**, dont la géométrie interne, la phase et la cohérence logicielle évoluent avec la trajectoire de circuit déclarée. Le but est de faire apparaître, dans un même artefact, trois lectures complémentaires : la trajectoire à matrice densité, le graphe de corrélations obtenu à chaque étape et l’état logique topologique RATISS associé à cette étape.
+
+> Le terme **qubit topologique RATISS** désigne ici un objet logique algorithmique. L’anneau, la tresse et l’arc de phase dans la scène WebGL sont le rendu direct des champs `twist`, `phase`, `coherence`, `P_sig` et `protected` exportés par ce noyau. Ils ne décrivent ni des atomes, ni un dispositif fabriqué, ni une correction d’erreur matérielle.
+
+| Question scientifique | Réponse apportée par le Studio | Ce que la réponse reste volontairement limitée à être |
+|---|---|---|
+| **Quel problème est observé ?** | La dérive d’une trajectoire bruitée peut être mise en regard des relations entre qubits, des ruptures de graphe et d’une signature logique distribuée. | Une inspection de simulation, pas un diagnostic de QPU. |
+| **Pourquoi employer une lecture topologique ?** | Au lieu de résumer la trajectoire par une seule valeur, le Studio expose une structure de relations, un cycle candidat, une phase et une cohérence logique rejouables. | Une représentation algorithmique contestable et remplaçable, pas une preuve universelle de protection. |
+| **Quelle valeur pratique ?** | Un chercheur peut comparer une hypothèse de circuit, un budget de bruit déclaré et le changement des signatures exportées dans une même timeline versionnée. | Une étape d’orientation avant une expérience matérielle distincte. |
+| **Pourquoi un Studio Cloud ?** | La même scène relie les résultats à matrice densité, le design, le cube de relations, les graphes et les artefacts prêts à être repris par le lecteur Personnel. | Une infrastructure de calcul local ou déployable, sans promesse implicite de QPU ou de GPU. |
+
+### Lire la scène topologique : circuit → phase → graphe → inspection
+
+Chaque porte du programme active une correspondance algorithmique déclarée. Une porte `h` appelle l’analogue topologique `h_gate`, une rotation déclare un marqueur de phase, une porte à deux qubits ajoute un marqueur de phase d’inspection, puis le budget de bruit logiciel exporté dégrade la cohérence. La scène Three.js ne devine aucun de ces éléments : l’anneau tordu est obtenu depuis `twist`, l’arc doré depuis `phase`, la luminosité depuis `coherence`, et la couleur du noyau depuis `protected`. Les nœuds et arcs adjacents restent, eux, le graphe de corrélations de la simulation à matrice densité.
+
+| Élément visible | Champ d’artefact | Utilité d’inspection |
+|---|---|---|
+| Anneau avec douze nœuds | `logical_topology.twist`, `P_sig` | Rendre visible la géométrie logique distribuée et sa signature. |
+| Trois brins colorés | `twist` et phase du noyau logique | Distinguer une torsion/phase algorithmique de la topologie du graphe de corrélations. |
+| Arc doré et flèche | `logical_topology.phase` | Relier une porte ou un marqueur de circuit à la phase logique affichée. |
+| Intensité du noyau | `logical_topology.coherence`, `protected` | Lire l’état logique logiciel au même instant que la simulation. |
+| Icosahèdres, tubes et route rose | `qubits`, `edges`, `tsp_inspection` | Examiner relations, criticité et ordre de visite ; la route TSP reste séparée de `P_sig`. |
+
 ## Pourquoi un studio unifié ?
 
 Les chercheurs et développeurs ont besoin d’un chemin court entre une hypothèse de conception et une visualisation inspectable. Ici, un même document de circuit sert de source de conception, est compilé dans un scaffold logique déclaré, puis donne une timeline versionnée relue par l’interface WebGL. La séparation entre les couches reste explicite : **le Studio décrit un design**, le **moteur simule un modèle**, puis l’**Atlas rejoue les sorties calculées**.
@@ -71,7 +96,7 @@ GitHub Markdown ne peut pas exécuter une page HTML/WebGL interactive dans un RE
 
 [![Aperçu animé réel de la trajectoire Cloud : design, scènes WebGL et métriques](docs/media/cloud-trajectory-webgl-preview.gif)](docs/media/cloud-trajectory-webgl.webm)
 
-Cette animation rejoue trois états affichés par la démo Cloud, de l’initialisation à `cz(0,1)`. Elle montre le design `transmon-microcell`, ses couches et hypothèses nominales à gauche, puis la scène de relations et les métriques de timeline. Ouvrez l’expérience interactive après `ratiss-studio-cloud` : [`http://127.0.0.1:8765/demos/decoherence-trajectory.html`](http://127.0.0.1:8765/demos/decoherence-trajectory.html).
+Cette animation rejoue trois états affichés par la démo Cloud, de l’initialisation à `cz(0,1)`. L’expérience interactive enrichie associe le design `transmon-microcell`, le graphe de relations et l’anneau/tresse de qubit topologique RATISS alimentés par les champs exportés. Ouvrez-la après `ratiss-studio-cloud` : [`http://127.0.0.1:8765/demos/decoherence-trajectory.html`](http://127.0.0.1:8765/demos/decoherence-trajectory.html).
 
 ### Démonstration 02 — référence TTF et régularisation de graphe
 

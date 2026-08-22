@@ -26,3 +26,11 @@ La capture terminale provient de l’étape `3 / 3`, porte `cz(0,1)`, avec la si
 Pour l’aperçu d’ablation, la première image provient du scénario `ttf_smooth_baseline`. Le navigateur a ensuite basculé sur le scénario `ttf_smooth_regularized` par son contrôle de démonstration avant la seconde capture.
 
 Les aperçus GIF Cloud ont été vérifiés après assemblage : le panneau Quantum Studio, la scène WebGL et le panneau de métriques restent lisibles à la largeur documentaire de 640 pixels.
+
+Après la refonte topologique, la démo de trajectoire Cloud affiche bien l’anneau logique distribué, trois brins de tresse, l’arc de phase, les douze nœuds de l’anneau et les métriques `P_sig`, `phase`, `twist`, `coherence` et `protected` réellement extraites de `logical_topology`. La comparaison TTF affiche son graphe et sa provenance sans introduire de qubit logique lorsque le champ `logical_topology.P_sig` n’est pas fourni par l’artefact d’ablation.
+
+Les nouvelles captures documentaires de la trajectoire Cloud proviennent de l’état `h(0)` (`P_sig` logique `0.765`, phase `0.785 rad`, torsion `1.571 rad`, cohérence `0.996`) et de l’état terminal `cz(0,1)` (`P_sig` logique `0.768`, phase `0.982 rad`, torsion `1.571 rad`, cohérence `0.952`). Les vues affichent le même design `transmon-microcell` dans les deux états.
+
+Pour l’aperçu TTF Cloud actualisé, l’état initial `ttf_smooth_baseline` est comparé à l’étape terminale `ttf_smooth_correlation_regularization` : `cx(2,4)`, frontière `[4, 3]`, support topologique total `1.006`, activation lisse moyenne `0.505` et `P_sig` graphe `0.000`. La scène affiche « graphe d’inspection » et les champs logiques « non exportée » dans les deux états.
+
+Le GIF actualisé `docs/media/cloud-trajectory-webgl-preview.gif` a été vérifié : le design Quantum Studio, l’anneau logique distribué, les trois brins de tresse, l’arc de phase et le panneau de signature logique restent visibles à la largeur d’intégration README.
