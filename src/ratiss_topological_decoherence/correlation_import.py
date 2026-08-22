@@ -43,6 +43,7 @@ def _external_step(
     config: SimulationConfig,
     previous_edges: set[tuple[int, int]],
     scope: str,
+    inspection_nodes: list[int] | None = None,
 ) -> tuple[dict[str, Any], set[tuple[int, int]]]:
     n_qubits = config.n_qubits
     topology = topology_from_correlation(matrix, max_edge=config.rips_max_edge)
@@ -86,7 +87,7 @@ def _external_step(
             "metric_scope": scope,
         },
         logical_topology={"P_sig": None, "scope": "not_applicable_external_non_density_input"},
-        tsp_inspection=inspection_route(positions, priority),
+        tsp_inspection=inspection_route(positions, inspection_nodes if inspection_nodes is not None else priority),
         cube_slice=[[round(float(value), 9) for value in row] for row in matrix],
     ).to_dict()
     artifact["metric_scope"] = {
@@ -94,6 +95,7 @@ def _external_step(
         "fidelity": "not_available", "purity": "not_available", "concurrence": "not_available",
         "criticality": "structural_priority_from_declared_association_not_quantum_decoherence", "association": scope,
     }
+    artifact["tsp_scope"] = "variation_boundary" if inspection_nodes is not None else "criticality_nodes"
     for qubit in artifact["qubits"]:
         qubit["fidelity_to_ideal"] = None; qubit["local_decoherence"] = None; qubit["purity"] = None
     return artifact, active

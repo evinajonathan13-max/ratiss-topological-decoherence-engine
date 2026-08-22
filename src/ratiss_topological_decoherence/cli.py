@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import argparse
 import json
 from pathlib import Path
 
@@ -19,9 +20,20 @@ def main() -> None:
     source.add_argument("--counts-input", help="External Qiskit counts trajectory JSON to normalize as a declared classical association.")
     source.add_argument("--photon-input", help="External photonic mode-distribution trajectory JSON to normalize locally.")
     source.add_argument("--bio-input", help="External normalized bio correlation-matrix trajectory JSON to normalize locally.")
+    parser.add_argument("--ttf-ablation-input", help="Existing timeline.v1 JSON used to generate separate TTF smooth baseline and regularized scenarios.")
+    parser.add_argument("--ttf-ablation-dir", default="artifacts/ttf_smooth_ablation", help="Output directory for the two TTF ablation timelines.")
     args = parser.parse_args()
     destination = Path(args.output)
     destination.parent.mkdir(parents=True, exist_ok=True)
+    if args.ttf_ablation_input:
+        from .ttf_stabilization import run_ttf_smooth_ablation
+        source_document = json.loads(Path(args.ttf_ablation_input).read_text(encoding="utf-8"))
+        baseline, regularized = run_ttf_smooth_ablation(source_document)
+        output_dir = Path(args.ttf_ablation_dir); output_dir.mkdir(parents=True, exist_ok=True)
+        (output_dir / "timeline_baseline.json").write_text(json.dumps(baseline, indent=2), encoding="utf-8")
+        (output_dir / "timeline_regularized.json").write_text(json.dumps(regularized, indent=2), encoding="utf-8")
+        print(f"Wrote {output_dir / 'timeline_baseline.json'} and {output_dir / 'timeline_regularized.json'}.")
+        return
     if args.studio_input:
         document = run_studio_file(args.studio_input)
     elif args.statevector_input:
