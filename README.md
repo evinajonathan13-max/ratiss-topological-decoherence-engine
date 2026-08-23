@@ -18,7 +18,7 @@ Le Studio ne place pas la topologie à la fin d’un pipeline comme une décorat
 
 | Question scientifique | Réponse apportée par le Studio | Ce que la réponse reste volontairement limitée à être |
 |---|---|---|
-| **Quel problème est observé ?** | La dérive d’une trajectoire bruitée peut être mise en regard des relations entre qubits, des ruptures de graphe et d’une signature logique distribuée. | Une inspection de simulation, pas un diagnostic de QPU. |
+| **Quel problème est observé ?** | La dérive d’une trajectoire bruitée — et plus généralement l’audit de résultats quantiques — peut être mise en regard des relations entre qubits, des ruptures de graphe et d’une signature logique distribuée. | Un diagnostic topologique de données quantiques, simulées **ou mesurées sur QPU**. Ce que le Studio ne fait pas : contrôler le matériel ou affirmer l’intriquation. |
 | **Pourquoi employer une lecture topologique ?** | Au lieu de résumer la trajectoire par une seule valeur, le Studio expose une structure de relations, un cycle candidat, une phase et une cohérence logique rejouables. | Une représentation algorithmique contestable et remplaçable, pas une preuve universelle de protection. |
 | **Quelle valeur pratique ?** | Un chercheur peut comparer une hypothèse de circuit, un budget de bruit déclaré et le changement des signatures exportées dans une même timeline versionnée. | Une étape d’orientation avant une expérience matérielle distincte. |
 | **Pourquoi un Studio Cloud ?** | La même scène relie les résultats à matrice densité, le design, le cube de relations, les graphes et les artefacts prêts à être repris par le lecteur Personnel. | Une infrastructure de calcul local ou déployable, sans promesse implicite de QPU ou de GPU. |
@@ -42,7 +42,7 @@ Les chercheurs et développeurs ont besoin d’un chemin court entre une hypoth�
 | Couche | Ce que le dépôt fait | Ce qu’il ne prétend pas faire |
 |---|---|---|
 | Conception | Schéma, couches conceptuelles, fréquences nominales, risque de diaphonie et export JSON | Solveur électromagnétique, layout de fonderie ou calibration |
-| Simulation | Évolution locale à matrice densité, état idéal/bruité et réductions de sous-systèmes | Exécution équivalente à un QPU réel |
+| Simulation | Évolution locale à matrice densité, état idéal/bruité et réductions de sous-systèmes | Modèle de calcul, pas le matériel. Les exécutions QPU réelles que nous comparons (Job IDs publics) servent de référence matérielle pour ce modèle, pas d'équivalent. |
 | Cartographie | Cube temporel, graphe de relations, Betti, `P_sig`, criticité et TSP | Observable matérielle directe ou métrique universelle de performance |
 | Noyau logique | Qubit topologique RATISS simulé, anneau/torsion/bruit logiciel et signature logique | Qubit topologique matériel démontré |
 | Ingestion | Statevectors, comptages, distributions photoniques, matrices de corrélation déclarées | Tomographie, entanglement ou diagnostic inféré lorsqu’ils ne sont pas fournis |
@@ -56,7 +56,7 @@ Le Studio ne remplace pas le concepteur de circuit par une vue décorative. La c
 | Conception Quantum Studio | Démo, ajout de transmon, optimisation heuristique et export JSON | Ni layout de fonderie, ni solveur EM, ni recette de fabrication |
 | Schéma et couches | Composants, couplers, résonateurs, feedlines et proxies de couches | Représentation de conception, pas géométrie certifiée de puce |
 | Risques fréquentiels et diaphonie | Séparation nominale et score d’overlay explicite | Ni mesure, ni calibration électromagnétique |
-| Simulation et scène WebGL | Timeline versionnée, graphe, criticité, `P_sig` et signature logique | Résultats de simulation / post-traitement, pas QPU |
+| Simulation et scène WebGL | Timeline versionnée, graphe, criticité, `P_sig` et signature logique | Simulation et post-traitement par défaut. Le même pipeline ingète et audite aussi les mesures d'un QPU réel (comptages), comme montré dans la section Validation — pas le matériel lui-même. |
 | Console de compilation | Scaffold logique, provenance et carte Studio → RATISS | N’interprète pas un scaffold comme une séquence de pulses |
 
 ## Démarrage en moins de cinq minutes
@@ -223,7 +223,7 @@ Les adaptateurs traduisent un format d’entrée déclaré vers le contrat `rati
 | Entrée | Calculé par l’adaptateur | Limite encodée |
 |---|---|---|
 | Statevector Qiskit | Matrices densité et relations dérivées | Un statevector de simulation n’est pas une validation de matériel |
-| Comptages Qiskit | Association classique diagonale et covariance de bits | Pas de cohérence hors diagonale, tomographie ni entanglement déduits |
+ | Comptages Qiskit | Association classique diagonale et covariance de bits | Audit des mesures QPU réelles (provenant de hardware). Pas de cohérence hors diagonale, de tomographie ni d'intrication déduites. |
 | Perceval / modes photoniques | Co-occupations de modes déclarées ou distribution locale | Pas de matrice densité photonique inventée |
 | Corrélations bio | Matrices normalisées fournies par l’appelant | Pas de diagnostic, de causalité ou d’interprétation biomédicale |
 
