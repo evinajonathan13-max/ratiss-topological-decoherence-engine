@@ -91,7 +91,14 @@ def rips_persistence(distance: np.ndarray, max_edge: float | None = None) -> dic
         if dimension in (0, 1):
             diagrams[f"H{dimension}"].append([float(births[creator]), None])
 
-    finite_h1 = [death - birth for birth, death in diagrams["H1"] if death is not None and death > birth]
+    # tolérance numérique : exclure les cycles dégénérés (naissance ≈ mort)
+    # introduits par des arêtes de poids quasi identiques (float64)
+    _tol = 1e-9
+    finite_h1 = [
+        death - birth
+        for birth, death in diagrams["H1"]
+        if death is not None and (death - birth) > _tol
+    ]
     betti = [sum(1 for _, death in diagrams[f"H{dim}"] if death is None) for dim in (0, 1)] + [0]
     return {
         "diagrams": diagrams,

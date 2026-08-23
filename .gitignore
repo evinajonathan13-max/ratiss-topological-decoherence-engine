@@ -7,3 +7,4 @@ artifacts/*.json
 coverage.xml
 .coverage
 .env
+*.egg-info/
