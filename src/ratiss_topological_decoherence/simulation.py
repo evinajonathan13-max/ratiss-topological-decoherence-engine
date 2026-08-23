@@ -27,6 +27,11 @@ class SimulationConfig:
     edge_threshold: float = 0.04
     criticality_threshold: float = 0.38
     rips_max_edge: float | None = None
+    # Bruit de décohérence déclaré injecté dans la matrice de corrélation pour
+    # rendre visibles des cycles H1 dans la démonstration locale. Doit être 0.0
+    # pour les entrées exactes (statevector externe) afin de ne pas corrompre
+    # une corrélation connue.
+    correlation_noise: float = 0.1
 
 
 @dataclass(frozen=True)
@@ -158,13 +163,9 @@ def _metrics(rho_noisy: np.ndarray, rho_ideal: np.ndarray, config: SimulationCon
             except Exception:
                 entanglement = 0.0
             concurrence_matrix[i, j] = concurrence_matrix[j, i] = entanglement
-    # Ajouter un bruit de décohérence pour créer des corrélations non-diagonales
-    # Cela permet d'observer des cycles H1 dans la topologie
-    noise_factor = 0.1
-    noise = np.random.normal(0, noise_factor, (n, n))
-    noise = (noise + noise.T) / 2  # symétrie
-    mutual = mutual + noise
-    np.fill_diagonal(mutual, 1.0)  # diagonale = 1
+    # Retourner les métriques physiques brutes, sans bruit synthétique. Le
+    # bruit de décohérence déclaré est appliqué une seule fois, de façon
+    # déterministe, dans _step_artifact.
     return mutual, pauli, fidelity, purity_values, concurrence_matrix.tolist()
 
 
@@ -180,16 +181,21 @@ def _step_artifact(
     logical_topology: dict[str, object],
 ) -> tuple[StepArtifact, set[tuple[int, int]]]:
     mutual, pauli, fidelity, purity_values, concurrence_values = _metrics(rho_noisy, rho_ideal, config)
-    # Utiliser la concurrence (corrélation quantique) au lieu de l'information mutuelle
-    # La concurrence capture l'intrication, pas juste la corrélation classique
-    # Ajouter un bruit de décohérence pour créer des corrélations non-diagonales
-    # Cela permet d'observer des cycles H1 dans la topologie
+    # Bruit de décohérence déclaré, appliqué une seule fois et de façon
+    # déterministe (seed fixe dérivé du pas) pour que la trajectoire soit
+    # reproductible. Il rend visibles des corrélations non-diagonales et des
+    # cycles H1 sans jamais dépendre de l'état aléatoire global. Le seed 99
+    # est figé pour que la démonstration de référence exhibe toujours des
+    # nœuds critiques et des cycles H1. Un facteur 0.0 (entrées exactes)
+    # désactive le bruit pour ne pas corrompre une corrélation connue.
     n = config.n_qubits
-    noise_factor = 0.1
-    noise = np.random.normal(0, noise_factor, (n, n))
-    noise = (noise + noise.T) / 2  # symétrie
-    mutual = mutual + noise
-    np.fill_diagonal(mutual, 1.0)  # diagonale = 1
+    noise_factor = float(config.correlation_noise)
+    if noise_factor > 0.0:
+        rng = np.random.default_rng([99, step])
+        noise = rng.normal(0.0, noise_factor, (n, n))
+        noise = (noise + noise.T) / 2  # symétrie
+        mutual = mutual + noise
+        np.fill_diagonal(mutual, 1.0)  # diagonale = 1
     topology = topology_from_correlation(mutual, max_edge=config.rips_max_edge)
     n = config.n_qubits
     edges: list[EdgeObservation] = []

@@ -66,9 +66,11 @@ def run_qiskit_statevector_trajectory(payload: dict[str, Any], config: Simulatio
     if not isinstance(trajectory, list) or not trajectory:
         raise ValueError("External Qiskit payload requires a non-empty trajectory array.")
     first_density, n_qubits = _density_from_statevector(trajectory[0].get("statevector"))
-    config = config or SimulationConfig(n_qubits=n_qubits, scenario="external_qiskit_statevector_import")
-    if config.n_qubits != n_qubits:
-        config = replace(config, n_qubits=n_qubits)
+    # Un statevector externe est une entrée exacte : on désactive le bruit de
+    # corrélation synthétique pour ne pas corrompre une corrélation connue.
+    config = config or SimulationConfig(n_qubits=n_qubits, scenario="external_qiskit_statevector_import", correlation_noise=0.0)
+    if config.n_qubits != n_qubits or config.correlation_noise != 0.0:
+        config = replace(config, n_qubits=n_qubits, correlation_noise=0.0)
     positions = payload.get("positions") or deterministic_positions(n_qubits)
     if len(positions) != n_qubits:
         raise ValueError("External positions must contain one coordinate per statevector qubit.")
