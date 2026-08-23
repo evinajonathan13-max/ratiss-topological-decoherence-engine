@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: ratiss-topological-decoherence-engine
+Version: 0.1.0
+Summary: Local RATISS SDK for simulating and inspecting topological logical-state decoherence trajectories.
+Requires-Python: >=3.11
+License-File: LICENSE
+Requires-Dist: flask>=3.0
+Requires-Dist: numpy>=1.26
+Requires-Dist: scipy>=1.11
+Requires-Dist: qiskit==2.5.2
+Requires-Dist: qiskit-aer==0.17.2
+Provides-Extra: photonics
+Requires-Dist: perceval-quandela<2,>=1.2; extra == "photonics"
+Dynamic: license-file

@@ -1,0 +1,3 @@
+[console_scripts]
+ratiss-studio-cloud = ratiss_topological_decoherence.cloud_server:main
+ratiss-topo-demo = ratiss_topological_decoherence.cli:main

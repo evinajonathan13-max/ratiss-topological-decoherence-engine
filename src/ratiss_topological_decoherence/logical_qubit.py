@@ -64,7 +64,7 @@ class TopologicalQubit:
     mirror the source branch’s existing algorithmic qubit implementation.
     """
 
-    def __init__(self, n_nodes: int = 12, protection: float = 0.15, seed: int = 42):
+    def __init__(self, n_nodes: int = 12, protection: float = 0.5, seed: int = 42):
         if n_nodes < 4:
             raise ValueError("n_nodes must be at least four for an H1-capable network")
         self.n_nodes = int(n_nodes)
@@ -81,7 +81,10 @@ class TopologicalQubit:
         points = []
         for index in range(self.n_nodes):
             angle = 2 * math.pi * index / self.n_nodes
-            radius = 1.0 + (self._twist / math.pi) * 0.4 * math.sin(3 * angle)
+            # twist dilate le cycle H1 : |0> = anneau compact (petit P_sig),
+            # |1> = anneau étendu (grand P_sig). Contraste ~3× pour le seuil.
+            deformation = self._twist / math.pi
+            radius = 0.15 + deformation * 1.0 + deformation * 0.1 * math.sin(3 * angle)
             points.append(
                 [
                     radius * math.cos(angle),
@@ -122,7 +125,9 @@ class TopologicalQubit:
         """Return the non-destructive simulated topological signature."""
 
         points = self._network()
-        points = points + self.rng.normal(0, (1 - self._coherence) * 0.05, points.shape)
+        # bruit proportionnel à la décohérence : assez fort pour que la
+        # protection topologique soit réellement mise à l'épreuve
+        points = points + self.rng.normal(0, (1 - self._coherence) * 0.2, points.shape)
         measured = self.measure.measure_density(points)
         protected = float(measured["P_sig"]) > self.protection
         return {
